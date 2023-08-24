@@ -212,12 +212,10 @@ contract TestSupplyFuzz is TestSetupVaults {
 
     function testShouldClaimTwiceRewardsWhenDepositedForSameAmountAndTwiceDurationFuzz(
         uint256 amount,
-        uint256 hold1,
-        uint256 hold2
+        uint256 hold
     ) public {
         amount = bound(amount, 1, 100_000 ether); // @bug ERC4626: deposit more than max
-        hold1 = bound(hold1, 1_000, 1_000_000);
-        hold2 = bound(hold2, 1_000, 1_000_000);
+        hold = bound(hold1, 1_000, 1_000_000);
 
         // uint256 amount = 10_000 ether;
         address[] memory poolTokens = new address[](1);
@@ -225,7 +223,7 @@ contract TestSupplyFuzz is TestSetupVaults {
 
         vaultSupplier1.depositVault(daiSupplyVault, amount);
 
-        vm.roll(block.number + hold1);
+        vm.roll(block.number + hold);
 
         uint256 expectedTotalRewardsAmount = lens.getUserUnclaimedRewards(
             poolTokens,
@@ -234,7 +232,7 @@ contract TestSupplyFuzz is TestSetupVaults {
 
         vaultSupplier2.depositVault(daiSupplyVault, amount);
 
-        vm.roll(block.number + hold2);
+        vm.roll(block.number + hold);
 
         expectedTotalRewardsAmount += lens.getUserUnclaimedRewards(
             poolTokens,
@@ -256,19 +254,17 @@ contract TestSupplyFuzz is TestSetupVaults {
 
     function testShouldClaimSameRewardsWhenDepositedForSameAmountAndDuration1Fuzz(
         uint256 amount,
-        uint256 hold1,
-        uint256 hold2
+        uint256 hold
     ) public {
         amount = bound(amount, 1, DAI_BALANCE); // @bug ERC4626: deposit more than max
-        hold1 = bound(hold1, 1_000, 1_000_000);
-        hold2 = bound(hold2, 1_000, 1_000_000);
+        hold = bound(hold1, 1_000, 1_000_000);
 
         address[] memory poolTokens = new address[](1);
         poolTokens[0] = cDai;
 
         uint256 shares1 = vaultSupplier1.depositVault(daiSupplyVault, amount);
 
-        vm.roll(block.number + hold1);
+        vm.roll(block.number + hold);
 
         uint256 expectedTotalRewardsAmount = lens.getUserUnclaimedRewards(
             poolTokens,
@@ -278,7 +274,7 @@ contract TestSupplyFuzz is TestSetupVaults {
         uint256 shares2 = vaultSupplier2.depositVault(daiSupplyVault, amount);
         vaultSupplier1.redeemVault(daiSupplyVault, shares1 / 2);
 
-        vm.roll(block.number + hold2);
+        vm.roll(block.number + hold);
 
         expectedTotalRewardsAmount += lens.getUserUnclaimedRewards(
             poolTokens,
@@ -288,7 +284,7 @@ contract TestSupplyFuzz is TestSetupVaults {
         vaultSupplier1.redeemVault(daiSupplyVault, shares1 / 2);
         vaultSupplier2.redeemVault(daiSupplyVault, shares2 / 2);
 
-        vm.roll(block.number + 100);
+        vm.roll(block.number + hold);
 
         expectedTotalRewardsAmount += lens.getUserUnclaimedRewards(
             poolTokens,
