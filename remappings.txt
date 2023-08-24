@@ -5,3 +5,4 @@
 @tests/=lib/morpho-contracts/test-foundry/
 @contracts/=lib/morpho-contracts/contracts/
 @forge-std/=lib/morpho-contracts/lib/forge-std/src/
+@config=lib/morpho-contracts/config/eth-mainnet/compound/
