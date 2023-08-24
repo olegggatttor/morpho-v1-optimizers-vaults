@@ -11,3 +11,6 @@ revert_strings = "default"
 names = true
 sizes = true
 fuzz_runs = 1024
+
+[fuzz]
+runs = 10_000

@@ -7,7 +7,7 @@ NETWORK?=eth-mainnet
 FOUNDRY_SRC=src/${PROTOCOL}/
 FOUNDRY_TEST=test/${PROTOCOL}/
 FOUNDRY_REMAPPINGS=@config/=lib/morpho-contracts/config/${NETWORK}/${PROTOCOL}/
-FOUNDRY_ETH_RPC_URL?=https://${NETWORK}.g.alchemy.com/v2/${ALCHEMY_KEY}
+FOUNDRY_ETH_RPC_URL?=https://rpc.ankr.com/eth
 
 ifeq (${NETWORK}, eth-mainnet)
   FOUNDRY_CHAIN_ID=1
@@ -64,7 +64,7 @@ lcov-html:
 
 contract-% c-%:
 	@echo Running tests for contract $* of Morpho-${PROTOCOL} on \"${NETWORK}\" at block \"${FOUNDRY_FORK_BLOCK_NUMBER}\" with seed \"${FOUNDRY_FUZZ_SEED}\"
-	@forge test -vvv --match-contract $* | tee trace.ansi
+	@forge test -vv --no-match-path **/live/** --match-contract $* | tee trace.ansi
 
 single-% s-%:
 	@echo Running single test $* of Morpho-${PROTOCOL} on \"${NETWORK}\" at block \"${FOUNDRY_FORK_BLOCK_NUMBER}\" with seed \"${FOUNDRY_FUZZ_SEED}\"
@@ -78,5 +78,11 @@ storage-layout-check-%:
 
 config:
 	@forge config
+
+halmos:
+	@halmos -vvvv --contract TestSupplyVault --function testShouldDepositAmount
+
+fuzz:
+	forge test --no-match-path **/live/** --match-test "Fuzz" -vv
 
 .PHONY: test config common foundry coverage
