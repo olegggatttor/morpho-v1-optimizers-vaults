@@ -215,7 +215,7 @@ contract TestSupplyFuzz is TestSetupVaults {
         uint256 hold
     ) public {
         amount = bound(amount, 1, 100_000 ether); // @bug ERC4626: deposit more than max
-        hold = bound(hold1, 1_000, 1_000_000);
+        hold = bound(hold, 1_000, 1_000_000);
 
         // uint256 amount = 10_000 ether;
         address[] memory poolTokens = new address[](1);
@@ -257,7 +257,7 @@ contract TestSupplyFuzz is TestSetupVaults {
         uint256 hold
     ) public {
         amount = bound(amount, 1, DAI_BALANCE); // @bug ERC4626: deposit more than max
-        hold = bound(hold1, 1_000, 1_000_000);
+        hold = bound(hold, 1_000, 1_000_000);
 
         address[] memory poolTokens = new address[](1);
         poolTokens[0] = cDai;
